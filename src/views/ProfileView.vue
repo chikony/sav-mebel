@@ -117,11 +117,11 @@ function logout() {
 
           <nav class="profile-nav">
             <router-link to="/profile" class="profile-nav-link" active-class="active">
-              <span class="nav-icon">👤</span>
+              <img src="/src/assets/icon-profile.png" class="nav-icon" alt="Профиль" />
               Профиль
             </router-link>
             <router-link to="/profile/orders" class="profile-nav-link" active-class="active">
-              <span class="nav-icon">📦</span>
+              <img src="/src/assets/icon-orders.png" class="nav-icon" alt="Заказы" />
               Мои заказы
             </router-link>
           </nav>
@@ -348,7 +348,9 @@ function logout() {
 }
 
 .nav-icon {
-  font-size: 1.25rem;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
 
 .profile-main {
