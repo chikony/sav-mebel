@@ -5,6 +5,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useCartStore } from '@/stores/cart'
 import searchIcon from '@/assets/search-icon.png'
 import cartIcon from '@/assets/cart-icon.png'
+import logoIcon from '@/assets/logo.png'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -32,8 +33,7 @@ function logout() {
     <div class="container">
       <div class="header-inner">
         <router-link to="/" class="logo" @click="mobileMenuOpen = false">
-          <span class="logo-icon">🏠</span>
-          <span class="logo-text">САВ Мебель</span>
+          <img :src="logoIcon" alt="САВ Мебель" class="logo-image" />
         </router-link>
 
         <nav :class="['nav', { 'nav-open': mobileMenuOpen }]">
@@ -116,16 +116,14 @@ function logout() {
 .logo {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primary-color);
   text-decoration: none;
   flex-shrink: 0;
 }
 
-.logo-icon {
-  font-size: 1.75rem;
+.logo-image {
+  height: 40px;
+  width: auto;
+  display: block;
 }
 
 .nav {
