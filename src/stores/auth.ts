@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { User } from '@/types'
+import { hasConfig } from '@/services/firebase'
+import { saveUser as fbSaveUser } from '@/services/db'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
@@ -15,6 +17,11 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = authToken
     localStorage.setItem('token', authToken)
     localStorage.setItem('user', JSON.stringify(userData))
+
+    // Sync to Firestore if configured
+    if (hasConfig) {
+      fbSaveUser(userData).catch(() => {})
+    }
   }
 
   function logout() {

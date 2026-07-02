@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { syncFromFirestore } from '@/services/init'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import CartNotification from '@/components/CartNotification.vue'
@@ -9,6 +10,7 @@ const authStore = useAuthStore()
 
 onMounted(() => {
   authStore.initializeAuth()
+  syncFromFirestore()
 })
 </script>
 

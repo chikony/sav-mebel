@@ -22,6 +22,15 @@ const rating = ref(5)
 const comment = ref('')
 const showReviewForm = ref(false)
 
+const canReview = computed(() => {
+  if (!authStore.isAuthenticated || !product.value) return false
+  return cartStore.orders.some(order =>
+    order.userId === authStore.user?.id &&
+    order.status === 'delivered' &&
+    order.items.some(item => item.productId === product.value!.id)
+  )
+})
+
 const relatedProducts = computed(() => {
   if (!product.value) return []
   return productsStore.products
@@ -47,9 +56,8 @@ function buyNow() {
 }
 
 function submitReview() {
-  if (!authStore.isAuthenticated) {
-    alert('Пожалуйста, войдите в систему, чтобы оставить отзыв')
-    router.push('/login')
+  if (!canReview.value) {
+    alert('Оставить отзыв можно только после получения заказа с этим товаром')
     return
   }
 
@@ -139,8 +147,8 @@ onMounted(() => {
           <div class="product-actions">
             <div class="quantity-control">
               <button @click="quantity = Math.max(1, quantity - 1)">−</button>
-              <input type="number" v-model.number="quantity" min="1" max="10" />
-              <button @click="quantity = Math.min(10, quantity + 1)">+</button>
+              <input type="number" v-model.number="quantity" min="1" />
+              <button @click="quantity = Math.min(999, quantity + 1)">+</button>
             </div>
             <button 
               class="btn btn-primary btn-lg" 
@@ -197,15 +205,18 @@ onMounted(() => {
         <p v-else class="no-reviews">Отзывов пока нет. Будьте первыми!</p>
 
         <div class="review-form-container">
+          <div v-if="!canReview && authStore.isAuthenticated" class="review-restricted">
+            Отзыв можно оставить только после получения заказа с этим товаром
+          </div>
           <button 
-            v-if="!showReviewForm" 
+            v-if="!showReviewForm && canReview" 
             class="btn btn-secondary" 
             @click="showReviewForm = true"
           >
             Оставить отзыв
           </button>
 
-          <form v-else @submit.prevent="submitReview" class="review-form">
+          <form v-else-if="showReviewForm" @submit.prevent="submitReview" class="review-form">
             <h3>Написать отзыв</h3>
             
             <div class="form-group">
@@ -567,6 +578,15 @@ onMounted(() => {
   text-align: center;
   color: var(--text-light);
   padding: 2rem;
+}
+
+.review-restricted {
+  text-align: center;
+  color: var(--text-light);
+  padding: 1rem;
+  background: var(--bg-color);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
 }
 
 .review-form-container {

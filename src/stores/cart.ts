@@ -4,6 +4,8 @@ import type { CartItem, Product, Order } from '@/types'
 import { useProductsStore } from './products'
 import { useAuthStore } from './auth'
 import { mockOrders } from '@/data/mockData'
+import { hasConfig } from '@/services/firebase'
+import { saveOrder as fbSaveOrder } from '@/services/db'
 
 export const useCartStore = defineStore('cart', () => {
   const items = ref<CartItem[]>([])
@@ -82,6 +84,11 @@ export const useCartStore = defineStore('cart', () => {
 
     orders.value.push(newOrder)
     clearCart()
+
+    // Sync to Firestore if configured
+    if (hasConfig) {
+      fbSaveOrder(newOrder).catch(() => {})
+    }
     
     return newOrder
   }

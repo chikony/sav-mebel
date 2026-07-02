@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { Product, Review, Category } from '@/types'
 import { mockProducts, mockCategories, mockReviews } from '@/data/mockData'
+import { hasConfig } from '@/services/firebase'
+import { saveReview as fbSaveReview } from '@/services/db'
 
 export const useProductsStore = defineStore('products', () => {
   const products = ref<Product[]>(mockProducts)
@@ -48,6 +50,11 @@ export const useProductsStore = defineStore('products', () => {
       product.rating = Math.round((totalRating / productReviews.length) * 10) / 10
       product.reviewCount = productReviews.length
     }
+
+    // Sync to Firestore if configured
+    if (hasConfig) {
+      fbSaveReview(newReview).catch(() => {})
+    }
   }
 
   function addProduct(product: Omit<Product, 'id' | 'createdAt' | 'reviewCount' | 'rating'>) {
@@ -89,4 +96,6 @@ export const useProductsStore = defineStore('products', () => {
     updateProduct,
     deleteProduct
   }
+}, {
+  persist: true
 })
