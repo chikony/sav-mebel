@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import type { CartItem, Product, Order } from '@/types'
 import { useProductsStore } from './products'
 import { useAuthStore } from './auth'
+import { mockOrders } from '@/data/mockData'
 
 export const useCartStore = defineStore('cart', () => {
   const items = ref<CartItem[]>([])
@@ -108,5 +109,12 @@ export const useCartStore = defineStore('cart', () => {
     getOrderById
   }
 }, {
-  persist: true
+  persist: {
+    afterRestore: (ctx) => {
+      // Ensure orders are never empty on page load — seed from mock data
+      if (ctx.store.orders.length === 0) {
+        ctx.store.orders = mockOrders
+      }
+    }
+  }
 })
