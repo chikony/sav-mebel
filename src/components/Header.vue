@@ -121,9 +121,10 @@ function logout() {
 }
 
 .logo-image {
-  height: 40px;
+  height: 55px;
   width: auto;
   display: block;
+  background: var(--white);
 }
 
 .nav {
