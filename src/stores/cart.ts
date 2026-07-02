@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { CartItem, Product, Order } from '@/types'
 import { useProductsStore } from './products'
+import { useAuthStore } from './auth'
 
 export const useCartStore = defineStore('cart', () => {
   const items = ref<CartItem[]>([])
@@ -65,9 +66,11 @@ export const useCartStore = defineStore('cart', () => {
       quantity: item.quantity
     }))
 
+    const authStore = useAuthStore()
+
     const newOrder: Order = {
       id: orders.value.length + 1,
-      userId: 1, // Will be set from auth store
+      userId: authStore.user?.id || 0,
       items: orderItems,
       totalAmount: totalPrice.value,
       status: 'pending',
