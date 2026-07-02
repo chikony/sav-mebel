@@ -121,7 +121,7 @@ function logout() {
 }
 
 .logo-image {
-  height: 55px;
+  height: 68px;
   width: auto;
   display: block;
   background: var(--white);
